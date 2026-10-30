@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure Test Website</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;700&family=Instrument+Serif&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #000;
+            --fg: #fff;
+            --dim: rgba(255,255,255,.5);
+            --line: rgba(255,255,255,.16);
+            --glow: rgba(255,255,255,.13);
+            --serif: "Instrument Serif", "Times New Roman", serif;
+            --sans: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+        }
+        [data-theme="light"] {
+            --bg: #fff;
+            --fg: #000;
+            --dim: rgba(0,0,0,.5);
+            --line: rgba(0,0,0,.16);
+            --glow: rgba(0,0,0,.09);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body { min-height: 100%; }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--fg);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            transition: background .5s, color .5s;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Lampu sorot yang mengikuti kursor */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(520px circle at var(--mx, 50%) var(--my, 40%), var(--glow), transparent 70%);
+        }
+
+        /* Garis kisi tipis yang memudar ke tepi */
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(var(--line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--line) 1px, transparent 1px);
+            background-size: 88px 88px;
+            opacity: .45;
+            -webkit-mask-image: radial-gradient(ellipse at center, #000 0%, transparent 72%);
+            mask-image: radial-gradient(ellipse at center, #000 0%, transparent 72%);
+        }
+
+        header, main, footer { position: relative; z-index: 1; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 28px clamp(20px, 5vw, 64px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: .01em;
+        }
+
+        .dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--fg);
+            position: relative;
+        }
+        .dot::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 1px solid var(--fg);
+            animation: ping 2.2s cubic-bezier(0, 0, .2, 1) infinite;
+        }
+        @keyframes ping {
+            0% { transform: scale(1); opacity: .9; }
+            80%, 100% { transform: scale(3.2); opacity: 0; }
+        }
+
+        .toggle {
+            font: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--fg);
+            background: transparent;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 9px 18px;
+            cursor: pointer;
+            transition: border-color .25s, background .25s;
+        }
+        .toggle:hover { border-color: var(--fg); }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 24px clamp(20px, 5vw, 64px);
+        }
+
+        .intro {
+            font-size: clamp(15px, 1.6vw, 18px);
+            color: var(--dim);
+            margin-bottom: 8px;
+            animation: rise 1s .1s both;
+        }
+
+        .clock {
+            font-family: var(--serif);
+            font-weight: 400;
+            font-size: clamp(4.2rem, 18vw, 16rem);
+            line-height: .95;
+            letter-spacing: -.03em;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+            animation: rise 1.1s .25s both;
+        }
+        .clock .sec { color: var(--dim); }
+        .clock .sep { animation: blink 2s steps(1) infinite; }
+        @keyframes blink { 50% { opacity: .25; } }
+
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: none; }
+        }
+
+        .lead {
+            max-width: 34ch;
+            margin-top: 28px;
+            font-size: clamp(20px, 2.4vw, 28px);
+            line-height: 1.3;
+            font-weight: 500;
+            animation: rise 1.1s .45s both;
+        }
+
+        .btn {
+            align-self: flex-start;
+            margin-top: 36px;
+            font: inherit;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--bg);
+            background: var(--fg);
+            border: 1px solid var(--fg);
+            border-radius: 999px;
+            padding: 15px 34px;
+            cursor: pointer;
+            transition: background .3s, color .3s, transform .2s;
+            animation: rise 1.1s .6s both;
+        }
+        .btn:hover { background: transparent; color: var(--fg); }
+        .btn:active { transform: scale(.96); }
+
+        footer {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-top: 1px solid var(--line);
+        }
+        .info {
+            padding: 22px clamp(20px, 5vw, 64px);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .info + .info { border-left: 1px solid var(--line); }
+        .info small { display: block; color: var(--dim); font-size: 13px; }
+
+        /* Notifikasi saat tombol diklik */
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 112px;
+            z-index: 5;
+            transform: translate(-50%, 24px);
+            max-width: calc(100% - 40px);
+            padding: 16px 26px;
+            border-radius: 14px;
+            background: var(--fg);
+            color: var(--bg);
+            font-weight: 500;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .35s, transform .35s;
+        }
+        .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+        :focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+
+        @media (max-width: 640px) {
+            footer { grid-template-columns: 1fr; }
+            .info + .info { border-left: 0; border-top: 1px solid var(--line); }
+            .toast { bottom: 24px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="brand"><span class="dot"></span>Azure Web Test</div>
+        <button class="toggle" id="theme" type="button">Mode terang</button>
+    </header>
+
+    <main>
+        <p class="intro">Waktu sekarang</p>
+        <div class="clock" id="clock" aria-live="off">
+            <span id="h">00</span><span class="sep">:</span><span id="m">00</span><span class="sep sec">:</span><span class="sec" id="s">00</span>
+        </div>
+        <p class="lead">Website ini berhasil berjalan di Microsoft Azure.</p>
+        <button class="btn" type="button" onclick="showMessage()">Klik Saya</button>
+    </main>
+
+    <footer>
+        <div class="info"><small>Status</small>Online di Microsoft Azure</div>
+        <div class="info"><small>Tanggal</small><span id="date"></span></div>
+        <div class="info"><small>Zona waktu</small><span id="zone"></span></div>
+    </footer>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <script>
+        const pad = n => String(n).padStart(2, "0");
+
+        function updateTime() {
+            const now = new Date();
+            document.getElementById("h").textContent = pad(now.getHours());
+            document.getElementById("m").textContent = pad(now.getMinutes());
+            document.getElementById("s").textContent = pad(now.getSeconds());
+            document.getElementById("date").textContent = now.toLocaleDateString("id-ID", {
+                weekday: "long", day: "numeric", month: "long", year: "numeric"
+            });
+        }
+        document.getElementById("zone").textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        let toastTimer;
+        function showMessage() {
+            const toast = document.getElementById("toast");
+            toast.textContent = "Halo! Website kamu sudah berhasil berjalan di Azure 🎉";
+            toast.classList.add("show");
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
+        }
+
+        // Ganti tema hitam / putih
+        const root = document.documentElement;
+        const themeBtn = document.getElementById("theme");
+        themeBtn.addEventListener("click", () => {
+            const toLight = root.dataset.theme === "dark";
+            root.dataset.theme = toLight ? "light" : "dark";
+            themeBtn.textContent = toLight ? "Mode gelap" : "Mode terang";
+        });
+
+        // Lampu sorot mengikuti kursor
+        window.addEventListener("pointermove", e => {
+            root.style.setProperty("--mx", e.clientX + "px");
+            root.style.setProperty("--my", e.clientY + "px");
+        });
+    </script>
+</body>
+</html>
